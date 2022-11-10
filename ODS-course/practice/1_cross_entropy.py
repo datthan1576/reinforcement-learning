@@ -8,19 +8,13 @@ env = gym.make('maze-sample-5x5-v0')
 state_n = 25
 action_n = 4
 
-
-class RandomAgent():
-    def __init__(self, action_n):
-        self.action_n = action_n
-        return None
-    
-    def get_action(self, state):
-        return random.randint(0, self.action_n - 1)
-
+# build agent using cross-entropy method 
 class CEM():
     def __init__(self, state_n, action_n):
         self.state_n = state_n
         self.action_n = action_n
+        # p1 = p2 = .. = pn = 1/number_of_actions
+        # (state, action) matrix 
         self.policy = np.ones((self.state_n, self.action_n)) / self.action_n
     
     def get_action(self, state):
@@ -82,17 +76,22 @@ q_param = 0.9
 
 
 for _ in range(episode_n):
+    # get trajectories and total rewards for each of them
     trajectories = [get_trajectory(agent, trajectory_len) for _ in range(trajectory_n)]
     
+    # mean total rewards
     mean_total_reward = np.mean([trajectory['total_reward'] for trajectory in trajectories])
     print(mean_total_reward)
     
+    # get best trajectories
     elite_trajectories = get_elite_trajectories(trajectories, q_param)
     
+    # update policy using best found trajectories
     if len(elite_trajectories) > 0:
         agent.update_policy(elite_trajectories)
 
-#test
+
+# Reset enviroment and visualize result using calculated policy
 obs = env.reset()
 state = get_state(obs)
 

@@ -11,6 +11,7 @@ class CEM(nn.Module):
         self.state_dim = state_dim
         self.action_n = action_n
         
+        # neural networks: input-state, 
         self.network = nn.Sequential(
             nn.Linear(self.state_dim, 100), 
             nn.ReLU(), 
@@ -70,6 +71,7 @@ def get_trajectory(env, agent, trajectory_len, visualize=False):
             
     return trajectory
 
+
 def get_elite_trajectories(trajectories, q_param):
     total_rewards = [trajectory['total_reward'] for trajectory in trajectories]
     quantile = np.quantile(total_rewards, q=q_param) 
@@ -81,9 +83,9 @@ state_dim = 4
 action_n = 2
 
 agent = CEM(state_dim, action_n)
-episode_n = 50
+episode_n = 100
 trajectory_n = 20
-trajectory_len = 500
+trajectory_len = 5000
 q_param = 0.8
 
 for episode in range(episode_n):
